@@ -452,7 +452,6 @@ input, select, textarea, button, option, .field label, .field input, .field sele
   };
   const EFFORT = ["d4","d6","d8","d10","d12"];
   const COMMON_TAGS = ["Ágil","Pesada","Brutal","Perfurante","Ritualística","Implacável","Defensiva","Precisa","Longo Alcance","Silenciosa"];
-  const RARE_TAGS = ["Mística","Rúnica","Devastadora","Ethereal"];
 
   const RUNES = {
     intention: [
@@ -513,6 +512,8 @@ input, select, textarea, button, option, .field label, .field input, .field sele
       const base = deepClone(DEFAULT_STATE);
       const merged = {...base,...parsed,character:{...base.character,...parsed.character,attrs:{...base.character.attrs,...(parsed.character?.attrs||{})}}};
       merged.inventory=(merged.inventory||[]).map(item=>({...item,slots:Math.max(1,Number(item.slots)||1)}));
+      const allowedTags = new Set(COMMON_TAGS);
+      merged.weapons=(merged.weapons||[]).map(w=>({...w,tags:(w.tags||[]).filter(t=>allowedTags.has(t))}));
       return merged;
     }catch(e){
       console.warn("Falha ao carregar localStorage",e);
@@ -726,7 +727,7 @@ input, select, textarea, button, option, .field label, .field input, .field sele
           <div class="field"><label>Bônus do Teste</label><input data-we="bonus" type="number" min="-99" max="99" value="${Number(w.bonus||0)}"></div>
           <div class="field"><label>Esforço</label><select data-we="effort">${EFFORT.map(x=>`<option ${x===w.effort?"selected":""}>${x}</option>`).join("")}</select></div>
         </div>
-        <div class="editor-section"><div class="section-label">Tags</div><div class="tag-row">${(w.tags||[]).map(t=>`<span class="tag">${esc(t)}<button type="button" data-we-action="remove-tag" data-tag="${esc(t)}">×</button></span>`).join("")} ${w.tags.length<maxTags?`<select data-we-action="add-tag"><option value="">+ Tag</option>${[...COMMON_TAGS,...(w.rare?RARE_TAGS:[])].filter(t=>!w.tags.includes(t)).map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select>`:""}</div></div>
+        <div class="editor-section"><div class="section-label">Tags</div><div class="tag-row">${(w.tags||[]).map(t=>`<span class="tag">${esc(t)}<button type="button" data-we-action="remove-tag" data-tag="${esc(t)}">×</button></span>`).join("")} ${w.tags.length<maxTags?`<select data-we-action="add-tag"><option value="">+ Tag</option>${COMMON_TAGS.filter(t=>!w.tags.includes(t)).map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select>`:""}</div></div>
         <label class="weapon-check"><input data-we="rare" type="checkbox" ${w.rare?"checked":""}> Arma rara (${w.tags.length}/${maxTags} tags)</label>
         <div class="weapon-editor-actions"><button class="btn danger icon-button" data-we-action="delete">${icon("trash")} Excluir Arma</button><button class="btn primary" data-we-action="close">Concluir</button></div>
       </div>`;
