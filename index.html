@@ -864,15 +864,24 @@ input, select, textarea, button, option, .field label, .field input, .field sele
     if(count>=4 && count<=7) power="Intensa";
     else if(count>=8) power="Avassaladora";
 
+    // RUNES usa [label, key]. As seleções guardam a key,
+    // então precisamos inverter o mapa para recuperar o label.
     const labels = [];
     for(const group of Object.keys(RUNES)){
       const selected = draft.selections[group];
-      const map = new Map(RUNES[group]);
-      selected.forEach(k=>{ if(map.has(k)) labels.push(map.get(k)); });
+      const map = new Map(RUNES[group].map(([label,key])=>[key,label]));
+      selected.forEach(k=>{
+        if(map.has(k)) labels.push(map.get(k));
+      });
     }
+
     const formula = labels.length ? labels.join(" + ") : "Nenhuma runa selecionada";
+
     const short = Object.entries(draft.selections)
-      .flatMap(([g,arr])=>arr.map(k=>new Map(RUNES[g]).get(k)))
+      .flatMap(([g,arr])=>{
+        const map = new Map(RUNES[g].map(([label,key])=>[key,label]));
+        return arr.map(k=>map.get(k)).filter(Boolean);
+      })
       .join(" • ");
 
     const free = state.character.archetype === "Arcanista";
