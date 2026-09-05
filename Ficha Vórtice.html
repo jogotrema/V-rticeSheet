@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>O Vórtice de Ky’lar — Ficha de Personagem</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700;800&family=Nerko+One&display=swap");
+:root{
+  --paper:#f7f1df;
+  --paper-2:#efe6d2;
+  --paper-3:#fbf8ef;
+  --ink:#1b1d24;
+  --muted:#716d63;
+  --line:#37342f;
+  --line-soft:#b9b1a1;
+  --dark:#222734;
+  --accent:#ef6669;
+  --danger:#a2433a;
+  --success:#48634f;
+  --shadow:rgba(31,28,23,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#ded7c8;color:var(--ink);font-family:"Josefin Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overflow-x:hidden;zoom:0.970}
+button,input,select,textarea{font-family:"Josefin Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button{cursor:pointer}
+
+/* Tipografia da interface: Josefin Sans para dados/campos; Nerko One apenas para títulos. */
+input, select, textarea, button, option, .field label, .field input, .field select, .field textarea,
+.weapon-editor, .weapon-editor input, .weapon-editor select, .weapon-editor textarea,
+.ritual-form input, .ritual-form textarea, .rune-group button, .rune-clear, .validation, .summary-stat span, .summary-stat b {
+  font-family:"Josefin Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.app{width:min(1500px,98vw);margin:12px auto 20px}
+.shell{background:var(--paper);border:1.5px solid var(--line);overflow:hidden;box-shadow:0 8px 28px var(--shadow)}
+
+/* ===== CABEÇALHO ===== */
+.header{display:grid;grid-template-columns:minmax(420px,1.08fr) minmax(390px,.92fr);min-height:122px;border-bottom:1.5px solid var(--line);background:var(--paper)}
+.character-identity{padding:14px 20px 12px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:var(--ink);margin-bottom:4px}
+.character-name-wrap{min-width:0}
+.character-name{width:100%;border:0;border-bottom:2px solid var(--line);border-radius:0;background:transparent;outline:0;color:var(--ink);font-family:"Nerko One","Trebuchet MS",cursive;font-size:clamp(34px,3.4vw,58px);font-weight:400;letter-spacing:.01em;line-height:.95;padding:0 0 6px}
+.character-name::placeholder{color:#817b71;opacity:.9}
+.character-subline{display:flex;align-items:center;gap:12px;margin-top:11px;flex-wrap:wrap}
+.identity-field{display:flex;align-items:center;gap:6px}
+.identity-field>span{font-size:8px;text-transform:uppercase;letter-spacing:.13em;font-weight:900;color:var(--ink)}
+.identity-field select{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);font-size:11px;font-weight:700;padding:2px 17px 2px 1px;outline:0}
+.identity-separator{color:var(--line-soft);font-size:14px}
+.header-actions{padding:14px 18px;display:flex;align-items:center;justify-content:flex-end;gap:18px;min-width:0;border-left:1.5px solid var(--line)}
+.header-action-group{display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+.header-action-group + .header-action-group{padding-left:18px;border-left:1px solid var(--line-soft)}
+.rest-label{font-size:8px;text-transform:uppercase;letter-spacing:.19em;font-weight:900;color:var(--muted)}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap}
+.btn{min-height:32px;border:1px solid #8f877a;border-radius:3px;background:var(--paper-3);color:var(--ink);padding:0 10px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:background .12s,transform .12s,border-color .12s}
+.btn:hover{background:#f0e7d5;border-color:var(--ink);transform:translateY(-1px)}
+.btn.primary{background:var(--dark);border-color:var(--dark);color:#fbf6e9}
+.btn.primary:hover{background:#171b25}
+.btn.danger{color:var(--danger)}
+.btn.small{min-height:29px;padding:0 8px;font-size:9px}
+.svg-icon{width:13px;height:13px;display:block;flex:0 0 auto}
+.icon-button{display:inline-flex;align-items:center;justify-content:center;gap:5px}
+
+/* ===== CORPO: TRÊS COLUNAS ===== */
+.columns{display:grid;grid-template-columns:minmax(315px,.88fr) minmax(430px,1.1fr) minmax(430px,1fr);gap:0;align-items:stretch;min-height:calc(100vh - 154px)}
+.sheet-column{min-width:0;display:flex;flex-direction:column;background:var(--paper)}
+.sheet-column + .sheet-column{border-left:1.5px solid var(--line)}
+.character-stats{display:flex;flex-direction:column;gap:0}
+
+/* Blocos: quadrados e contínuos, evitando o aspecto de dashboard. */
+.stats-block{padding:10px 13px 11px;border:0;border-bottom:1px solid var(--line-soft);background:transparent}
+.stats-block:last-child{border-bottom:0}
+.compact-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.compact-head h2,.card-head h2{margin:0;font-family:"Nerko One","Trebuchet MS",cursive;font-size:23px;font-weight:400;letter-spacing:.01em;line-height:1}
+.section-label{margin:0;font-size:8px;text-transform:uppercase;letter-spacing:.13em;font-weight:900;color:var(--muted)}
+
+/* ===== RECURSOS ===== */
+.resources-top{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0}
+.resource{padding:9px 10px 8px;border:1px solid #8f877a;background:rgba(255,252,245,.34)}
+.resource-head{display:flex;justify-content:space-between;align-items:flex-end;gap:5px}
+.resource-head strong{font-family:"Nerko One","Trebuchet MS",cursive;font-size:27px;font-weight:400;line-height:.95}
+.resource-head span{font-size:7px;color:var(--muted);text-transform:uppercase;white-space:nowrap;letter-spacing:.05em}
+.resource-bar{height:5px;background:#d3cab9;margin:8px 0;overflow:hidden}
+.resource-bar>div{height:100%;background:var(--accent);transition:width .2s}
+#stabilityBar{background:rgb(75, 134, 166)}
+.resource-input input{width:100%;height:28px;border:1px solid #8f877a;border-radius:0;background:var(--paper-3);color:var(--ink);padding:0 7px;font-size:12px;font-weight:800;outline:0}
+.resource-input input:focus,.field input:focus,.field select:focus,.field textarea:focus,.character-name:focus{border-color:var(--accent);box-shadow:0 1px 0 rgba(239,102,105,.28)}
+
+/* ===== ATRIBUTOS ===== */
+.attribute-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.attr{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px;padding:7px 8px;border:1px solid var(--line-soft);background:rgba(255,252,245,.24)}
+.attr-name{font-family:"Nerko One","Trebuchet MS",cursive;font-size:20px;font-weight:400;line-height:.9}
+.attr-abbr{font-size:7px;letter-spacing:.13em;color:var(--muted);font-weight:900;margin-top:3px}
+.stepper{display:flex;align-items:center;gap:3px}
+.stepper button{width:25px;height:25px;border:1px solid #8f877a;border-radius:2px;background:var(--paper-3);color:var(--ink);font-weight:900;padding:0}
+.stepper button:hover{border-color:var(--ink);background:#efe6d5}
+.stepper input{width:36px;height:25px;border:1px solid #8f877a;border-radius:2px;background:var(--paper-3);text-align:center;font-weight:900;outline:0;padding:0}
+
+/* ===== DEFESA ===== */
+.defense-inline{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.derived{padding:8px;border:1px solid var(--line-soft);background:rgba(255,252,245,.24)}
+.derived .k{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:900}
+.derived .v{font-family:"Nerko One","Trebuchet MS",cursive;font-size:23px;font-weight:400;margin-top:2px;line-height:1}
+.armor-field{grid-column:1/-1!important;margin:0!important}
+.field label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:900}
+.field select,.field input,.field textarea{border:1px solid #8f877a;border-radius:0;background:var(--paper-3);color:var(--ink);outline:0}
+.armor-field select{width:100%;height:31px;padding:0 7px}
+
+/* ===== CABEÇALHOS DOS PAINÉIS ===== */
+.card{border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden;min-width:0}
+.card-head{padding:9px 12px 8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:8px;background:var(--paper-2)}
+.card-head>div{min-width:0}
+.card-head .hint{font-size:8px;color:var(--muted);margin-top:3px;letter-spacing:.01em}
+.card-body{padding:7px 9px}
+.equipment-grid{display:flex;flex-direction:column;gap:0;min-width:0;min-height:0;flex:1}
+.equipment-grid>.card{border-bottom:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.equipment-grid>.card:first-child{flex:0 0 auto}
+.equipment-grid>.card:nth-child(2){flex:1 1 auto}
+.equipment-grid>.card:nth-child(2) .card-body{display:flex;flex-direction:column;flex:1;min-height:0}
+
+/* ===== LISTAS ===== */
+.weapon-list,.inventory-list,.ritual-list{display:flex;flex-direction:column;gap:0;overflow:visible}
+.weapon-card,.ritual-card,.inventory-row{width:100%;border:0;border-bottom:1px solid var(--line-soft);border-radius:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.weapon-card:hover,.ritual-card:hover,.inventory-row:hover{background:#eee6d4;transform:none;box-shadow:none}
+.weapon-card{display:grid;grid-template-columns:minmax(0,1.6fr) auto minmax(72px,.55fr) 14px;gap:8px;align-items:center;padding:8px 4px}
+.weapon-card-main,.ritual-main{display:flex;flex-direction:column;min-width:0}
+.weapon-card-title,.ritual-title{font-family:"Nerko One","Trebuchet MS",cursive;font-size:19px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:.9}
+.weapon-card-meta,.ritual-meta{font-size:8px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weapon-card-stats{display:flex;gap:11px;align-items:center}
+.weapon-card-stats span{display:flex;flex-direction:column;gap:1px;min-width:28px}
+.weapon-card-stats small,.ritual-stat span{font-size:7px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}
+.weapon-card-stats b{font-family:"Nerko One","Trebuchet MS",cursive;font-size:18px;font-weight:400;line-height:1}
+.weapon-card-tags{display:flex;gap:3px;flex-wrap:wrap}
+.weapon-card .tag{font-size:7px;padding:2px 4px;border:1px solid #9f9789;border-radius:1px;background:var(--paper-3)}
+.weapon-card-arrow,.ritual-arrow,.inventory-row-arrow{color:var(--muted);display:flex;justify-content:center}
+.muted{font-size:8px;color:var(--muted);font-style:italic}
+
+/* ===== INVENTÁRIO ===== */
+.inventory-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid var(--line-soft)}
+.inventory-count{font-family:"Nerko One","Trebuchet MS",cursive;font-size:19px;font-weight:400;line-height:1}
+.status-pill{font-size:7px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--success)}
+.status-pill.warn{color:var(--danger)}
+.inventory-list{flex:1;min-height:120px}
+.inventory-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 4px}
+.inventory-item-main{display:flex;flex-direction:column;min-width:0}
+.inventory-item-kind{font-size:7px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:900}
+.inventory-item-name{font-family:"Josefin Sans",ui-sans-serif,sans-serif;font-size:11px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}
+.inventory-row-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.inventory-slots{font-size:8px;color:var(--muted);font-weight:800;white-space:nowrap}
+.inventory-overflow{padding:7px 5px;color:var(--danger);font-size:8px;border-top:1px dashed var(--danger);margin-top:4px}
+.empty{padding:14px 7px;text-align:center;border:1px dashed #a49b8d;color:var(--muted);font-size:9px}
+
+/* ===== RITUAIS + ANOTAÇÕES ===== */
+.rituals-section{display:flex;flex-direction:column;min-height:0;border-bottom:1px solid var(--line)}
+.rituals-section .card-body{overflow:auto;min-height:0}
+.ritual-card{display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:8px;align-items:center;padding:8px 4px}
+.ritual-stats{display:flex;gap:9px;align-items:center}
+.ritual-stat{display:flex;flex-direction:column;gap:1px;min-width:34px}
+.ritual-stat b{font-family:"Nerko One","Trebuchet MS",cursive;font-size:18px;font-weight:400;line-height:1}
+.notes-section{display:flex;flex-direction:column;flex:1;min-height:240px}
+.notes-body{display:flex;flex:1;min-height:0;padding:9px}
+.notes-body textarea{width:100%;min-height:180px;flex:1;resize:none;border:1px solid #8f877a;border-radius:0;background:repeating-linear-gradient(to bottom,var(--paper-3) 0,var(--paper-3) 25px,#ddd4c3 26px);color:var(--ink);font:13px/26px "Josefin Sans",ui-sans-serif,sans-serif;padding:4px 8px;outline:0}
+
+/* ===== MODAIS ===== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(24,24,25,.52);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal-backdrop.open{display:flex}
+.modal{width:min(1000px,96vw);max-height:92vh;overflow:auto;background:var(--paper);border:1.5px solid var(--line);border-radius:0;box-shadow:0 25px 70px rgba(0,0,0,.3)}
+.modal-head{position:sticky;top:0;z-index:2;padding:11px 13px;border-bottom:1px solid var(--line);background:var(--paper-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.modal-head h3{margin:0;font-family:"Nerko One","Trebuchet MS",cursive;font-size:27px;font-weight:400;line-height:1}
+.modal-body{padding:13px}
+.builder-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.rune-group{border:1px solid var(--line-soft);padding:9px;background:rgba(255,252,245,.32);margin-bottom:8px}
+.rune-group h4{margin:0 0 7px;font-family:"Nerko One","Trebuchet MS",cursive;font-size:20px;font-weight:400}
+.rune-options{display:flex;flex-wrap:wrap;gap:5px}
+.rune-opt{border:1px solid #8f877a;background:var(--paper-3);color:var(--ink);border-radius:1px;padding:6px 8px;font-size:10px;font-weight:750}
+.rune-opt.active{background:var(--dark);color:#f7f1e5;border-color:var(--dark)}
+.rune-opt:disabled{opacity:.45;cursor:not-allowed}
+.ritual-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ritual-form textarea{min-height:110px;resize:vertical;line-height:1.45;padding:8px}
+.ritual-description{margin:0;line-height:1.6;font-size:12px;white-space:pre-wrap}
+.ritual-potency-note,.ritual-use-status{font-size:10px;line-height:1.45;color:var(--muted)}
+.ritual-use-status{margin-top:8px;padding:7px;background:#eee6d4;color:var(--ink)}
+.builder-summary{border:1px solid var(--line-soft);padding:10px;background:rgba(255,252,245,.35);position:sticky;top:55px;align-self:start}
+.builder-description{width:100%;min-height:150px;resize:vertical;line-height:1.45;padding:8px;margin-bottom:10px}
+.rune-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.rune-group-head h4{margin:0}
+.rune-clear{font-family:"Josefin Sans","Trebuchet MS",sans-serif;font-size:11px;padding:4px 8px}
+.builder-summary h4{margin:0 0 8px;font-family:"Nerko One","Trebuchet MS",cursive;font-size:21px;font-weight:400}
+.summary-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.summary-stat{border:1px solid var(--line-soft);padding:7px;background:var(--paper-3)}
+.summary-stat span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}
+.summary-stat b{display:block;margin-top:2px;font-size:14px}
+.power{margin-top:7px;padding:8px;background:#eee6d4;text-align:center;font-family:"Nerko One","Trebuchet MS",cursive;font-size:21px;font-weight:400}
+.validation{margin-top:7px;padding:7px;font-size:9px;background:#e7eee7;color:var(--success)}
+.validation.error{background:#f0e2df;color:var(--danger)}
+.formula{margin-top:8px;padding:8px;border-left:2px solid var(--accent);background:#f1e8d7;font-family:Georgia,serif;font-size:12px;line-height:1.45}
+.modal-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:12px}
+.item-dialog{width:min(460px,94vw);max-height:90vh;overflow:auto;background:var(--paper);border:1.5px solid var(--line);border-radius:0;box-shadow:0 25px 70px rgba(0,0,0,.3)}
+.weapon-editor .editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.weapon-editor .editor-section{margin-top:12px}
+.weapon-editor-actions{display:flex;justify-content:space-between;gap:7px;margin-top:15px;padding-top:10px;border-top:1px solid var(--line)}
+.weapon-editor .weapon-check{margin-top:10px;display:flex;align-items:center;gap:6px;font-size:9px;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field input,.field select,.field textarea{width:100%;min-height:31px;padding:0 7px}
+.field textarea{padding:7px}
+.tag-row{display:flex;gap:4px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 5px;border:1px solid #9c9487;border-radius:1px;background:var(--paper-3);font-size:9px}
+.tag button{border:0;background:none;padding:0;color:var(--muted);font-weight:900}
+.icon-btn{width:29px;height:29px;border:1px solid #8f877a;border-radius:2px;background:var(--paper-3);display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}
+.icon-btn.danger{color:var(--danger)}
+
+.toast{position:fixed;right:14px;bottom:14px;z-index:80;background:var(--dark);color:#f7f1e5;padding:9px 11px;border-radius:2px;font-size:10px;box-shadow:0 10px 30px rgba(0,0,0,.2);transform:translateY(10px);opacity:0;pointer-events:none;transition:.18s}
+.toast.show{transform:none;opacity:1}
+
+/* ===== RESPONSIVIDADE ===== */
+@media(max-width:1100px){
+  .header{grid-template-columns:1fr}
+  .header-actions{border-left:0;border-top:1px solid var(--line);justify-content:flex-start}
+  .columns{grid-template-columns:minmax(280px,.78fr) minmax(0,1fr)}
+  .right-column{grid-column:1/-1;border-left:0!important;border-top:1.5px solid var(--line)}
+  .right-column{display:grid;grid-template-columns:1fr 1fr}
+  .right-column>.notes-section{border-left:1px solid var(--line-soft)}
+}
+@media(max-width:760px){
+  .app{width:100%;margin:0}
+  .shell{border-left:0;border-right:0}
+  .header{min-height:0}
+  .character-identity{padding:13px 14px 11px}
+  .header-actions{padding:11px 14px;flex-wrap:wrap}
+  .columns{display:flex;flex-direction:column;min-height:0}
+  .sheet-column,.right-column,.right-column{border:0!important;border-bottom:1.5px solid var(--line)!important;display:flex;width:100%}
+  .right-column>.notes-section{border-left:0}
+  .notes-section{min-height:320px}
+}
+@media(max-width:520px){
+  .character-name{font-size:40px}
+  .character-subline{gap:7px}
+  .header-actions{flex-direction:column;align-items:stretch}
+  .header-action-group,.header-action-group .btn-row{width:100%}
+  .header-action-group + .header-action-group{padding-left:0;padding-top:9px;border-left:0;border-top:1px solid var(--line-soft)}
+  .header-action-group .btn{flex:1}
+  .resources-top{grid-template-columns:1fr}
+  .attribute-grid{grid-template-columns:1fr}
+  .weapon-card{grid-template-columns:minmax(0,1fr) auto 14px}
+  .weapon-card-tags{display:none}
+  .ritual-card{grid-template-columns:minmax(0,1fr) auto 14px}
+  .ritual-stats{gap:6px}
+  .ritual-form,.weapon-editor .editor-grid{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="shell">
+    <header class="header character-header">
+      <div class="character-identity">
+        <div class="eyebrow">O Vórtice de Ky’lar</div>
+        <div class="character-name-wrap">
+          <input id="charName" class="character-name" type="text" placeholder="Nome do personagem..." aria-label="Nome do Personagem" />
+        </div>
+        <div class="character-subline">
+          <div class="identity-field">
+            <span>Arquétipo</span>
+            <select id="charArchetype" aria-label="Arquétipo">
+              <option>Combatente</option><option>Explorador</option><option>Arcanista</option><option>Guardião</option>
+            </select>
+          </div>
+          <span class="identity-separator">·</span>
+          <div class="identity-field">
+            <span>Origem</span>
+            <select id="charOrigin" aria-label="Origem">
+              <option>Humano</option><option>Demi-Humano</option><option>Construto</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="header-action-group">
+          <div class="rest-label">Personagem</div>
+          <div class="btn-row">
+            <button class="btn small icon-button" id="exportBtn" title="Salvar personagem em JSON"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> Salvar JSON</button>
+            <button class="btn small icon-button" id="importBtn" title="Importar personagem de JSON"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg> Importar</button>
+            <input id="importInput" type="file" accept="application/json,.json" hidden />
+          </div>
+        </div>
+        <div class="header-action-group">
+          <div class="rest-label">Recuperação</div>
+          <div class="btn-row">
+            <button class="btn small icon-button" id="shortRestBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-7"/><path d="M21 18v-7"/><path d="M3 15h18"/><path d="M5 11V8h5a3 3 0 0 1 3 3v0"/><path d="M13 11h6a2 2 0 0 1 2 2v2"/></svg> Restauro Curto</button>
+            <button class="btn small primary icon-button" id="longRestBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-7"/><path d="M21 18v-7"/><path d="M3 15h18"/><path d="M5 11V8h5a3 3 0 0 1 3 3v0"/><path d="M13 11h6a2 2 0 0 1 2 2v2"/></svg> Restauro Longo</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="columns">
+      <section class="sheet-column left-column">
+        <section class="character-stats">
+          <div class="stats-block resources-block">
+            <div class="compact-head"><h2>Recursos</h2></div>
+            <div class="resources-top">
+              <div class="resource resource-primary">
+                <div class="resource-head"><div><div class="section-label">Vida</div><strong id="lifeLabel">15 / 15</strong></div><span>15 + FOR</span></div>
+                <div class="resource-bar"><div id="lifeBar"></div></div>
+                <div class="resource-input"><input id="lifeCurrent" type="number" min="0" /></div>
+              </div>
+              <div class="resource resource-primary">
+                <div class="resource-head"><div><div class="section-label">Estabilidade</div><strong id="stabilityLabel">10 / 10</strong></div><span>10 + VON + INS</span></div>
+                <div class="resource-bar"><div id="stabilityBar"></div></div>
+                <div class="resource-input"><input id="stabilityCurrent" type="number" min="0" /></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-block attributes-block">
+            <div class="compact-head"><h2>Atributos</h2></div>
+            <div class="attribute-grid" id="attributeGrid"></div>
+          </div>
+
+          <div class="stats-block defense-block">
+            <div class="compact-head"><h2>Defesa</h2></div>
+            <div class="defense-inline">
+              <div class="derived"><div class="k">Defesa Base</div><div class="v" id="defenseValue">10</div></div>
+              <div class="derived"><div class="k">Bônus Guardião</div><div class="v" id="guardianBonus">+0</div></div>
+              <div class="derived"><div class="k">Armadura</div><div class="v" id="armorValue">1</div></div>
+              <div class="derived final-defense"><div class="k">Defesa Final</div><div class="v" id="finalDefense">11</div></div>
+              <div class="field armor-field"><label for="armorType">Tipo de Armadura</label><select id="armorType"><option value="1">Leve — 1</option><option value="2">Média — 2</option><option value="3">Pesada — 3</option></select></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="sheet-column center-column">
+        <section class="equipment-grid">
+          <article class="card weapons-section">
+            <div class="card-head">
+              <div><h2>Armas</h2><div class="hint">Abra uma arma para editar</div></div>
+              <button class="btn primary small icon-button" id="addWeaponBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg> Adicionar arma</button>
+            </div>
+            <div class="card-body"><div class="weapon-list" id="weaponList"></div></div>
+          </article>
+
+          <article class="card inventory-section">
+            <div class="card-head">
+              <div><h2>Inventário</h2><div class="hint">Itens carregados</div></div>
+              <button class="btn small icon-button" id="addItemBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg> Item</button>
+            </div>
+            <div class="card-body">
+              <div class="inventory-toolbar">
+                <div class="inventory-count"><span id="inventoryUsed">0</span> / <span id="inventoryTotal">10</span> espaços</div>
+                <span id="inventoryStatus" class="status-pill">Livre</span>
+              </div>
+              <div class="inventory-list" id="inventoryGrid"></div>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section class="sheet-column right-column">
+        <section class="card rituals-section">
+          <div class="card-head">
+            <div><h2>Rituais Preparados</h2><div class="hint">Cada runa conta 1 para CD e custo de Estabilidade</div></div>
+            <button class="btn primary small icon-button" id="newRitualBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg> Criar ritual</button>
+          </div>
+          <div class="card-body"><div class="ritual-list" id="ritualList"></div></div>
+        </section>
+
+        <section class="card notes-section">
+          <div class="card-head"><div><h2>Anotações</h2><div class="hint">Notas rápidas da personagem</div></div></div>
+          <div class="notes-body"><textarea id="characterNotes" placeholder="Anotações, pistas, objetivos, detalhes..."></textarea></div>
+        </section>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="ritualModal" role="dialog" aria-modal="true" aria-labelledby="ritualModalTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="ritualModalTitle">Montador Rúnico</h3>
+      <button class="btn small ghost icon-button" id="closeModalBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg> Fechar</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="weaponModal" role="dialog" aria-modal="true" aria-labelledby="weaponModalTitle">
+  <div class="item-dialog">
+    <div class="modal-head"><h3 id="weaponModalTitle">Arma</h3><button class="btn small ghost icon-button" id="closeWeaponModalBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg> Fechar</button></div>
+    <div class="modal-body" id="weaponModalBody"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+  <div class="item-dialog">
+    <div class="modal-head">
+      <h3 id="itemModalTitle">Adicionar Item</h3>
+      <button class="btn small ghost icon-button" id="closeItemModalBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg> Fechar</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="itemNameInput">Nome do item</label>
+        <input id="itemNameInput" type="text" placeholder="Ex.: Poção, Corda, Chave..." autocomplete="off">
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label for="itemSlotsInput">Espaços ocupados</label>
+        <input id="itemSlotsInput" type="number" min="1" max="99" value="1">
+      </div>
+      <div class="modal-actions">
+        <button class="btn danger" id="deleteEditItemBtn" style="display:none">Excluir</button>
+        <div class="btn-row"><button class="btn ghost" id="cancelItemBtn">Cancelar</button>
+        <button class="btn primary" id="saveItemBtn">Adicionar Item</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "vortice_kylar_ficha_v1";
+
+  /*
+    Regra de descanso usada pela interface:
+    - Restauro Curto: recupera 50% do máximo de Vida e Estabilidade,
+      sem ultrapassar os respectivos máximos.
+    - Restauro Longo: recupera completamente os dois recursos.
+    Como o pedido não traz um valor numérico explícito para o Restauro Curto,
+    este comportamento fica isolado aqui para poder ser alterado em 1 linha.
+  */
+  const SHORT_RESTORE_RATIO = 0.5;
+
+  const ATTRS = [
+    {id:"for", name:"Força", abbr:"FOR"},
+    {id:"des", name:"Destreza", abbr:"DES"},
+    {id:"ins", name:"Instinto", abbr:"INS"},
+    {id:"von", name:"Vontade", abbr:"VON"}
+  ];
+
+  const ARCHETYPES = ["Combatente","Explorador","Arcanista","Guardião"];
+  const ARMOR = {1:"Leve",2:"Média",3:"Pesada"};
+  const WEAPON_TYPES = {
+    "Leve": "1d4 • Ação Rápida",
+    "Média": "Postura Defensiva / Contra-ataque",
+    "Pesada": "+2 Effort • Derrubar se Effort ≥ 6",
+    "Longo Alcance": "Distâncias"
+  };
+  const EFFORT = ["d4","d6","d8","d10","d12"];
+  const COMMON_TAGS = ["Ágil","Pesada","Brutal","Perfurante","Ritualística","Implacável","Defensiva","Precisa","Longo Alcance","Silenciosa"];
+  const RARE_TAGS = ["Mística","Rúnica","Devastadora","Ethereal"];
+
+  const RUNES = {
+    intention: [
+      ["Mover","move"],
+      ["Romper","break"],
+      ["Proteger","protect"],
+      ["Alterar","alter"],
+      ["Revelar","reveal"],
+      ["Desestabilizar","destabilize"],
+      ["Prender","bind"]
+    ],
+    phenomenon: [
+      ["Matéria Comum","matter"],
+      ["Matéria Flexível","flexible"],
+      ["Energia","energy"],
+      ["Som","sound"],
+      ["Gravidade","gravity"],
+      ["Éter","ether"]
+    ],
+    parameter: [
+      ["Projétil","projectile"],
+      ["Área","area"],
+      ["Persistência","duration"],
+      ["Vínculo","link"],
+      ["Armadilha","trap"]
+    ]
+  };
+
+  const DEFAULT_STATE = {
+    character:{
+      name:"", origin:"Humano", archetype:"Combatente", armor:1,
+      attrs:{for:0,des:0,ins:0,von:0},
+      lifeCurrent:15, stabilityCurrent:10, notes:""
+    },
+    weapons:[
+      {id:id(),name:"Lâmina de Cinza",type:"Leve",attr:"des",bonus:0,effort:"d4",rare:false,tags:["Ágil"]}
+    ],
+    inventory:[],
+    rituals:[]
+  };
+
+  let state = loadState();
+  let modalMode = null;
+  let modalRitualId = null;
+  let draft = createEmptyDraft();
+
+  function id(){
+    return Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+  }
+
+  function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return deepClone(DEFAULT_STATE);
+      const parsed = JSON.parse(raw);
+      const base = deepClone(DEFAULT_STATE);
+      const merged = {...base,...parsed,character:{...base.character,...parsed.character,attrs:{...base.character.attrs,...(parsed.character?.attrs||{})}}};
+      merged.inventory=(merged.inventory||[]).map(item=>({...item,slots:Math.max(1,Number(item.slots)||1)}));
+      return merged;
+    }catch(e){
+      console.warn("Falha ao carregar localStorage",e);
+      return deepClone(DEFAULT_STATE);
+    }
+  }
+
+  function persist(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function exportCharacter(){
+    const payload={
+      app:"O Vórtice de Ky’lar — Ficha de Personagem",
+      version:2,
+      exportedAt:new Date().toISOString(),
+      state:deepClone(state)
+    };
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    const safe=(state.character.name||"personagem").trim().replace(/[^a-z0-9À-ÿ _-]/gi,"").replace(/\s+/g,"-").toLowerCase()||"personagem";
+    a.href=url; a.download=`vortice-kylar-${safe}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    toast("Personagem salvo em JSON.");
+  }
+
+  function importCharacter(file){
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const parsed=JSON.parse(reader.result);
+        const incoming=parsed?.state ?? parsed;
+        if(!incoming || typeof incoming!=="object" || !incoming.character || !incoming.character.attrs || !Array.isArray(incoming.weapons) || !Array.isArray(incoming.inventory) || !Array.isArray(incoming.rituals)){
+          throw new Error("Formato incompatível");
+        }
+        const base=deepClone(DEFAULT_STATE);
+        state={...base,...incoming,character:{...base.character,...incoming.character,attrs:{...base.character.attrs,...incoming.character.attrs}}};
+        state.inventory=(state.inventory||[]).map(item=>({...item,slots:Math.max(1,Number(item.slots)||1)}));
+        normalizeResources();
+        persist();
+        renderAll();
+        toast("Personagem importado com sucesso.");
+      }catch(err){
+        console.error(err);
+        toast("Não foi possível importar este JSON.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function createEmptyDraft(){
+    return {
+      id:null,
+      name:"",
+      note:"",
+      selections:{intention:[],phenomenon:[],parameter:[]}
+    };
+  }
+
+  function derived(){
+    const a = state.character.attrs;
+    return {
+      lifeMax:15 + a.for,
+      stabilityMax:10 + a.von + a.ins,
+      baseDefense:10 + a.des,
+      guardianBonus:state.character.archetype === "Guardião" ? 2 : 0,
+      armor:Number(state.character.armor)||1,
+      inventoryTotal:10 + (state.character.archetype === "Explorador" ? 1 : 0)
+    };
+  }
+
+
+  function normalizeResources(){
+    const d = derived();
+    state.character.lifeCurrent = clamp(Number(state.character.lifeCurrent),0,d.lifeMax);
+    state.character.stabilityCurrent = clamp(Number(state.character.stabilityCurrent),0,d.stabilityMax);
+  }
+
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+
+  function esc(v){
+    return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  function icon(name){
+    const paths={
+      plus:'<path d="M12 5v14M5 12h14"/>',
+      trash:'<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>',
+      eye:'<path d="M2.5 12s3.3-5 9.5-5 9.5 5 9.5 5-3.3 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/>',
+      'chevron-right':'<path d="m9 18 6-6-6-6"/>',
+      close:'<path d="M6 6l12 12M18 6 6 18"/>',
+      download:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+      upload:'<path d="M12 15V3M7 8l5-5 5 5M5 21h14"/>',
+      bed:'<path d="M3 18V8M3 14h18v4M6 14V10h4a3 3 0 0 1 3 3v1M21 18v-5"/>'
+    };
+    return `<svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name]||paths.plus}</svg>`;
+  }
+
+  function renderAll(){
+    syncHeader();
+    renderAttributes();
+    renderWeapons();
+    renderInventory();
+    renderRituals();
+    persist();
+  }
+
+  function syncHeader(){
+    const c = state.character;
+    document.getElementById("charName").value = c.name;
+    document.getElementById("charOrigin").value = c.origin;
+    document.getElementById("charArchetype").value = c.archetype;
+    const notes = document.getElementById("characterNotes");
+    if(notes) notes.value = c.notes || "";
+  }
+
+  function renderAttributes(){
+    const grid = document.getElementById("attributeGrid");
+    grid.innerHTML = ATTRS.map(a => `
+      <div class="attr">
+        <div><div class="attr-name">${a.name}</div><div class="attr-abbr">${a.abbr}</div></div>
+        <div class="stepper">
+          <button data-action="dec" data-attr="${a.id}" aria-label="Diminuir ${a.name}">−</button>
+          <input data-action="input" data-attr="${a.id}" type="number" min="0" value="${state.character.attrs[a.id]}">
+          <button data-action="inc" data-attr="${a.id}" aria-label="Aumentar ${a.name}">+</button>
+        </div>
+      </div>`).join("");
+
+    const d = derived();
+    document.getElementById("lifeLabel").textContent = `${state.character.lifeCurrent} / ${d.lifeMax}`;
+    document.getElementById("lifeBar").style.width = `${Math.max(0,Math.min(100,state.character.lifeCurrent/d.lifeMax*100))}%`;
+    document.getElementById("lifeCurrent").value = state.character.lifeCurrent;
+    document.getElementById("stabilityLabel").textContent = `${state.character.stabilityCurrent} / ${d.stabilityMax}`;
+    document.getElementById("stabilityBar").style.width = `${Math.max(0,Math.min(100,state.character.stabilityCurrent/d.stabilityMax*100))}%`;
+    document.getElementById("stabilityCurrent").value = state.character.stabilityCurrent;
+    document.getElementById("defenseValue").textContent = d.baseDefense;
+    document.getElementById("guardianBonus").textContent = `+${d.guardianBonus}`;
+    document.getElementById("armorValue").textContent = d.armor;
+    document.getElementById("finalDefense").textContent = d.baseDefense + d.guardianBonus + d.armor;
+    document.getElementById("armorType").value = String(d.armor);
+  }
+
+  function renderWeapons(){
+    const wrap = document.getElementById("weaponList");
+    if(!state.weapons.length){ wrap.innerHTML = `<div class="empty">Nenhuma arma cadastrada. Adicione uma para começar.</div>`; return; }
+    wrap.innerHTML = state.weapons.map(w => {
+      const base = state.character.attrs[w.attr] ?? 0;
+      const attack = base + Number(w.bonus||0);
+      const typeInfo = WEAPON_TYPES[w.type] || "";
+      const tags = (w.tags||[]).slice(0,3).map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+      return `<button type="button" class="weapon weapon-card" data-id="${w.id}">
+        <span class="weapon-card-main"><span class="weapon-card-title">${esc(w.name || "Nova Arma")}</span><span class="weapon-card-meta">${esc(w.type)} · ${esc(w.attr.toUpperCase())} · ${esc(typeInfo)}</span></span>
+        <span class="weapon-card-stats"><span><small>TESTE</small><b>${attack>=0?"+":""}${attack}</b></span><span><small>ESFORÇO</small><b>${esc(w.effort)}</b></span></span>
+        <span class="weapon-card-tags">${tags || `<span class="muted">Sem tags</span>`}</span>
+        <span class="weapon-card-arrow">${icon("chevron-right")}</span>
+      </button>`;
+    }).join("");
+  }
+
+  function inventoryUsed(){
+    return state.inventory.reduce((sum,item)=>sum + Math.max(1,Number(item.slots)||1),0);
+  }
+
+  function renderInventory(){
+    const total = derived().inventoryTotal;
+    state.inventory.forEach(item => { item.slots = Math.max(1, Number(item.slots)||1); });
+    const used = inventoryUsed();
+    document.getElementById("inventoryUsed").textContent = used;
+    document.getElementById("inventoryTotal").textContent = total;
+    const status = document.getElementById("inventoryStatus");
+    status.textContent = used > total ? "Acima da capacidade" : (used === total ? "Cheio" : "Livre");
+    status.className = used > total ? "status-pill warn" : "status-pill";
+    const list = state.inventory.length ? state.inventory.map((item,index)=>{
+      const slots=Math.max(1,Number(item.slots)||1);
+      return `<button type="button" class="inventory-item inventory-row" data-index="${index}">
+        <span class="inventory-item-main"><span class="inventory-item-kind">${item.kind==="ritual"?"Ritual":"Item"}</span><span class="inventory-item-name">${esc(item.name)}</span></span>
+        <span class="inventory-row-right"><span class="inventory-slots">${slots} ${slots===1?"espaço":"espaços"}</span><span class="inventory-row-arrow">${icon("chevron-right")}</span></span>
+      </button>`;
+    }).join("") : `<div class="empty">Nenhum item no inventário.</div>`;
+    document.getElementById("inventoryGrid").innerHTML = `${list}${used > total ? `<div class="inventory-overflow">Há ${used-total} espaço(s) além da capacidade atual. Os itens excedentes permanecem na ficha.</div>` : ""}`;
+  }
+
+  function renderRituals(){
+    const wrap = document.getElementById("ritualList");
+    if(!state.rituals.length){ wrap.innerHTML = `<div class="empty">Nenhum ritual preparado ainda. Construa uma fórmula rúnica para começar.</div>`; return; }
+    wrap.innerHTML = state.rituals.map(r => `
+      <button type="button" class="ritual ritual-card" data-action="view-ritual" data-id="${r.id}">
+        <span class="ritual-main"><span class="ritual-title">${esc(r.name)}</span><span class="ritual-meta">${esc(r.formulaShort)}${r.free?" • Gratuito do Arcanista":""}</span></span>
+        <span class="ritual-stats"><span class="ritual-stat"><span>CD</span><b>${10+r.runes}</b></span><span class="ritual-stat"><span>ESTAB.</span><b>${r.runes}</b></span><span class="ritual-stat"><span>POTÊNCIA</span><b>${r.power}</b></span></span>
+        <span class="ritual-arrow">${icon("chevron-right")}</span>
+      </button>`).join("");
+  }
+
+  let weaponModalId = null;
+  function openWeaponEditor(w){
+    weaponModalId = w.id;
+    document.getElementById("weaponModalTitle").textContent = w.name || "Arma";
+    renderWeaponModal(w);
+    document.getElementById("weaponModal").classList.add("open");
+  }
+  function closeWeaponModal(){ document.getElementById("weaponModal").classList.remove("open"); weaponModalId=null; }
+  function renderWeaponModal(w){
+    const maxTags=w.rare?3:2;
+    document.getElementById("weaponModalBody").innerHTML=`
+      <div class="weapon-editor">
+        <div class="field"><label>Nome da Arma</label><input data-we="name" value="${esc(w.name)}"></div>
+        <div class="editor-grid">
+          <div class="field"><label>Tipo</label><select data-we="type">${Object.keys(WEAPON_TYPES).map(x=>`<option ${x===w.type?"selected":""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Atributo</label><select data-we="attr"><option value="for" ${w.attr==="for"?"selected":""}>FOR</option><option value="des" ${w.attr==="des"?"selected":""}>DES</option></select></div>
+          <div class="field"><label>Bônus do Teste</label><input data-we="bonus" type="number" min="-99" max="99" value="${Number(w.bonus||0)}"></div>
+          <div class="field"><label>Esforço</label><select data-we="effort">${EFFORT.map(x=>`<option ${x===w.effort?"selected":""}>${x}</option>`).join("")}</select></div>
+        </div>
+        <div class="editor-section"><div class="section-label">Tags</div><div class="tag-row">${(w.tags||[]).map(t=>`<span class="tag">${esc(t)}<button type="button" data-we-action="remove-tag" data-tag="${esc(t)}">×</button></span>`).join("")} ${w.tags.length<maxTags?`<select data-we-action="add-tag"><option value="">+ Tag</option>${[...COMMON_TAGS,...(w.rare?RARE_TAGS:[])].filter(t=>!w.tags.includes(t)).map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select>`:""}</div></div>
+        <label class="weapon-check"><input data-we="rare" type="checkbox" ${w.rare?"checked":""}> Arma rara (${w.tags.length}/${maxTags} tags)</label>
+        <div class="weapon-editor-actions"><button class="btn danger icon-button" data-we-action="delete">${icon("trash")} Excluir Arma</button><button class="btn primary" data-we-action="close">Concluir</button></div>
+      </div>`;
+    document.querySelectorAll('#weaponModalBody [data-we]').forEach(el=>el.addEventListener('change',()=>{
+      const key=el.dataset.we; let value=el.type==='checkbox'?el.checked:el.value;
+      if(key==='bonus') value=Number(value)||0;
+      if(key==='rare'){ w.rare=!!value; if(!w.rare && w.tags.length>2) w.tags=w.tags.slice(0,2); }
+      else w[key]=value;
+      document.getElementById("weaponModalTitle").textContent=w.name||"Arma"; persist(); renderAll(); renderWeaponModal(w);
+    }));
+    document.querySelectorAll('#weaponModalBody [data-we-action]').forEach(el=>el.addEventListener('click',()=>{
+      const action=el.dataset.weAction;
+      if(action==='close') closeWeaponModal();
+      if(action==='delete'){ deleteWeapon(w.id); closeWeaponModal(); }
+      if(action==='remove-tag'){ w.tags=w.tags.filter(x=>x!==el.dataset.tag); persist(); renderAll(); renderWeaponModal(w); }
+    }));
+    const tagSelect=document.querySelector('#weaponModalBody [data-we-action="add-tag"]');
+    if(tagSelect) tagSelect.addEventListener('change',()=>{ addTag(w,tagSelect.value); renderWeaponModal(w); });
+  }
+
+  function openBuilder(){
+    modalMode = "edit";
+    modalRitualId = null;
+    draft = createEmptyDraft();
+    document.getElementById("ritualModalTitle").textContent = "Montador Rúnico";
+    renderBuilderModal();
+    openModal();
+  }
+
+  function openViewer(ritual){
+    modalMode = "view";
+    modalRitualId = ritual.id;
+    document.getElementById("ritualModalTitle").textContent = ritual.name;
+    renderViewerModal(ritual);
+    openModal();
+  }
+
+  function openModal(){ document.getElementById("ritualModal").classList.add("open"); }
+  function closeModal(){ document.getElementById("ritualModal").classList.remove("open"); modalMode=null; modalRitualId=null; }
+
+  function renderBuilderModal(){
+    const d = calculateDraft();
+    const selectedCount = d.runes;
+    const saveAllowed = selectedCount>0 && selectedCount <= state.character.attrs.von && draft.name.trim().length>0 && (d.free || state.inventory.length < d.inventoryTotal);
+
+    document.getElementById("modalBody").innerHTML = `
+      <div class="builder-layout">
+        <div>
+          <div class="ritual-form">
+            <div class="field">
+              <label for="ritualName">Nome do Ritual</label>
+              <input id="ritualName" value="${esc(draft.name)}" placeholder="Ex.: Laço de Éter">
+            </div>
+          </div>
+
+          <div class="rune-groups">
+            <div class="rune-group-head">
+              <span class="field-label">Runas</span>
+              <button type="button" class="btn ghost rune-clear" id="clearRunesBtn" ${selectedCount?"":"disabled"}>Limpar seleção</button>
+            </div>
+            ${renderRuneGroup("INTENÇÃO","intention",RUNES.intention)}
+            ${renderRuneGroup("FENÔMENO","phenomenon",RUNES.phenomenon)}
+            ${renderRuneGroup("PARÂMETRO","parameter",RUNES.parameter)}
+          </div>
+        </div>
+
+        <aside class="builder-summary">
+          <div class="field">
+            <label for="ritualNote">Descrição do Efeito</label>
+            <textarea id="ritualNote" class="builder-description" placeholder="Descreva o que o ritual faz, como se manifesta e quais efeitos produz.">${esc(draft.note)}</textarea>
+          </div>
+
+          <div class="summary-stat-grid">
+            <div class="summary-stat"><span>Runas</span><b>${selectedCount}</b></div>
+            <div class="summary-stat"><span>CD</span><b>${selectedCount?10+selectedCount:"—"}</b></div>
+            <div class="summary-stat"><span>Custo Estab.</span><b>${selectedCount||"—"}</b></div>
+            <div class="summary-stat"><span>Limite VON</span><b>${state.character.attrs.von}</b></div>
+          </div>
+          <div class="power">Potência: ${d.power || "—"}</div>
+          <div class="validation ${d.error?"error":""}">
+            ${d.error || (selectedCount===0 ? "Selecione pelo menos 1 runa." :
+               `Fórmula válida. ${d.free ? "Como Arcanista, este ritual pode ser gratuito." : "Ao salvar, 1 espaço do Inventário será ocupado."}`)}
+          </div>
+          <div class="modal-actions">
+            <button class="btn ghost" id="cancelRitualBtn">Cancelar</button>
+            <button class="btn primary" id="saveRitualBtn" ${saveAllowed?"":"disabled"}>Salvar Ritual</button>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    document.getElementById("ritualName").addEventListener("input", e=>{draft.name=e.target.value;renderBuilderModalPreserveFocus("ritualName")});
+    document.getElementById("ritualNote").addEventListener("input", e=>{draft.note=e.target.value;renderBuilderModalPreserveFocus("ritualNote")});
+    document.getElementById("clearRunesBtn").addEventListener("click",()=>{
+      draft.selections={intention:[],phenomenon:[],parameter:[]};
+      renderBuilderModal();
+    });
+    document.querySelectorAll(".rune-opt").forEach(btn => btn.addEventListener("click",()=>{
+      const group=btn.dataset.group, key=btn.dataset.key;
+      draft.selections[group].push(key);
+      renderBuilderModal();
+    }));
+    document.getElementById("cancelRitualBtn").addEventListener("click",closeModal);
+    document.getElementById("saveRitualBtn").addEventListener("click",saveRitual);
+  }
+
+  function renderBuilderModalPreserveFocus(idToFocus){
+    const scroll=document.querySelector(".modal").scrollTop;
+    renderBuilderModal();
+    const el=document.getElementById(idToFocus);
+    if(el){
+      el.focus();
+      el.selectionStart=el.selectionEnd=el.value.length;
+    }
+    document.querySelector(".modal").scrollTop=scroll;
+  }
+
+  function renderRuneGroup(title,group,options){
+    return `
+      <div class="rune-group">
+        <h4>${title}</h4>
+        <div class="rune-options">
+          ${options.map(([label,key])=>{
+            const count=draft.selections[group].filter(x=>x===key).length;
+            return `<button type="button" class="rune-opt ${count?"active":""}" data-group="${group}" data-key="${key}">${label}${count?` <span class="rune-count">×${count}</span>`:""}</button>`;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function calculateDraft(){
+    const count = Object.values(draft.selections).reduce((n,a)=>n+a.length,0);
+    let power = "Sutil";
+    if(count>=4 && count<=7) power="Intensa";
+    else if(count>=8) power="Avassaladora";
+
+    const labels = [];
+    for(const group of Object.keys(RUNES)){
+      const selected = draft.selections[group];
+      const map = new Map(RUNES[group]);
+      selected.forEach(k=>{ if(map.has(k)) labels.push(map.get(k)); });
+    }
+    const formula = labels.length ? labels.join(" + ") : "Nenhuma runa selecionada";
+    const short = Object.entries(draft.selections)
+      .flatMap(([g,arr])=>arr.map(k=>new Map(RUNES[g]).get(k)))
+      .join(" • ");
+
+    const free = state.character.archetype === "Arcanista";
+    let error = "";
+    if(count===0) error = "Selecione pelo menos 1 runa.";
+    else if(count > state.character.attrs.von) error = `A fórmula exige ${count} runas, mas Vontade atual é ${state.character.attrs.von}.`;
+    else if(!draft.name.trim()) error = "Dê um nome ao ritual antes de salvar.";
+    else if(!free && state.inventory.length >= derived().inventoryTotal) error = "Inventário cheio. Libere um espaço antes de preparar este ritual.";
+
+    return {runes:count,power,formula,formulaShort:short,free,error,inventoryTotal:derived().inventoryTotal};
+  }
+
+  function renderViewerModal(r){
+    const potencyText = r.power==="Sutil"
+      ? "A fórmula opera com delicadeza, adequada para efeitos menores e utilitários."
+      : r.power==="Intensa"
+      ? "A concentração rúnica produz uma manifestação relevante, capaz de alterar uma cena."
+      : "A fórmula comprime grande quantidade de intenção em um único efeito, com manifestação avassaladora.";
+
+    const stabilityCost = Number(r.runes)||0;
+    const currentStability = Number(state.character.stabilityCurrent)||0;
+    const canUse = currentStability >= stabilityCost;
+    const useLabel = stabilityCost > 0 ? `Usar Ritual · ${stabilityCost} Estabilidade` : "Usar Ritual";
+
+    document.getElementById("modalBody").innerHTML = `
+      <div class="builder-layout">
+        <div>
+          <div class="rune-group">
+            <h4>Fórmula Rúnica</h4>
+            <div class="formula">${esc(r.formulaShort || r.formula)}</div>
+          </div>
+          <div class="rune-group">
+            <h4>Descrição do Efeito</h4>
+            <p class="ritual-description">${esc(r.note || "Nenhuma descrição foi adicionada a este ritual.")}</p>
+            <p class="ritual-potency-note">${potencyText}</p>
+          </div>
+          <div class="rune-group">
+            <h4>Detalhamento</h4>
+            <div class="ritual-stats">
+              <div class="ritual-stat"><span>Runas</span><b>${r.runes}</b></div>
+              <div class="ritual-stat"><span>CD</span><b>${10+r.runes}</b></div>
+              <div class="ritual-stat"><span>Estabilidade</span><b>${r.runes}</b></div>
+            </div>
+          </div>
+        </div>
+        <aside class="builder-summary">
+          <h4>Potência</h4>
+          <div class="power">${r.power}</div>
+          <div class="validation">${r.free ? "Ritual gratuito do Arcanista — não ocupa espaço de Inventário." : "Ritual preparado ocupa 1 espaço do Inventário."}</div>
+          <div class="ritual-use-status">Estabilidade atual: <strong>${currentStability}</strong> · Custo para usar: <strong>${stabilityCost}</strong></div>
+          <div class="modal-actions">
+            <button class="btn danger icon-button" id="deleteRitualBtn"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg> Excluir Ritual</button>
+            <button class="btn ghost" id="useRitualBtn" ${canUse ? "" : "disabled"}>${useLabel}</button>
+            <button class="btn primary" id="closeViewerBtn">Concluir</button>
+          </div>
+        </aside>
+      </div>
+    `;
+    document.getElementById("deleteRitualBtn").addEventListener("click",()=>{
+      if(confirm("Excluir este ritual?")){
+        deleteRitual(r.id); closeModal(); renderAll();
+      }
+    });
+    document.getElementById("useRitualBtn").addEventListener("click",()=>{
+      if(!canUse){
+        toast(`Estabilidade insuficiente. Você precisa de ${stabilityCost}.`);
+        return;
+      }
+      state.character.stabilityCurrent = clamp(currentStability - stabilityCost, 0, derived().stabilityMax);
+      persist();
+      closeModal();
+      renderAll();
+      toast(`Ritual usado. -${stabilityCost} Estabilidade.`);
+    });
+    document.getElementById("closeViewerBtn").addEventListener("click",closeModal);
+  }
+
+  function saveRitual(){
+    const d=calculateDraft();
+    if(d.error){ toast(d.error); return; }
+    const r={
+      id:id(),
+      name:draft.name.trim(),
+      note:draft.note.trim(),
+      selections:deepClone(draft.selections),
+      runes:d.runes,
+      power:d.power,
+      formulaShort:d.formulaShort,
+      formula:d.formula,
+      free:d.free
+    };
+    state.rituals.push(r);
+    if(!r.free){
+      state.inventory.push({id:id(),name:r.name,kind:"ritual",sourceId:r.id});
+    }
+    persist();
+    closeModal();
+    renderAll();
+    toast("Ritual salvo.");
+  }
+
+  function deleteRitual(ritualId){
+    state.rituals = state.rituals.filter(r=>r.id!==ritualId);
+    state.inventory = state.inventory.filter(i=>!(i.kind==="ritual" && i.sourceId===ritualId));
+    persist();
+  }
+
+  function handleAttrChange(attr,newVal){
+    const old = state.character.attrs[attr];
+    let next = Math.max(0, Number(newVal)||0);
+    state.character.attrs[attr]=next;
+    normalizeResources();
+    renderAll();
+  }
+
+  function addWeapon(){
+    state.weapons.push({id:id(),name:"Nova Arma",type:"Leve",attr:"des",bonus:0,effort:"d4",rare:false,tags:[]});
+    renderAll();
+  }
+
+  function addItem(){
+    const modal=document.getElementById("itemModal");
+    const input=document.getElementById("itemNameInput");
+    const slots=document.getElementById("itemSlotsInput");
+    modal.classList.add("open");
+    input.value="";
+    slots.value="1";
+    requestAnimationFrame(()=>input.focus());
+  }
+  function closeItemModal(){ const m=document.getElementById("itemModal"); m.classList.remove("open"); delete m.dataset.editIndex; document.getElementById("itemModalTitle").textContent="Adicionar Item"; document.getElementById("saveItemBtn").textContent="Adicionar Item"; document.getElementById("deleteEditItemBtn").style.display="none"; }
+  function saveItemFromModal(){
+    const input=document.getElementById("itemNameInput"); const slotsInput=document.getElementById("itemSlotsInput");
+    const name=input.value.trim(); const slots=clamp(Number(slotsInput.value)||1,1,99);
+    if(!name){input.focus();return;}
+    const modal=document.getElementById("itemModal"); const editIndex=Number(modal.dataset.editIndex);
+    if(Number.isInteger(editIndex) && state.inventory[editIndex]){ state.inventory[editIndex].name=name; state.inventory[editIndex].slots=slots; delete modal.dataset.editIndex; closeItemModal(); renderAll(); toast("Item atualizado."); return; }
+    state.inventory.push({id:id(),name,kind:"item",slots}); closeItemModal(); renderAll(); toast("Item adicionado.");
+  }
+
+  function deleteWeapon(wid){
+    state.weapons=state.weapons.filter(w=>w.id!==wid);
+    renderAll();
+  }
+
+  function syncWeaponField(w, key, value){
+    if(key==="rare"){
+      const old=w.rare, next=!!value; w.rare=next;
+      if(!next && w.tags.length>2) w.tags=w.tags.slice(0,2);
+      if(old!==next) renderAll(); else persist();
+      return;
+    }
+    if(key==="bonus") w[key]=Number(value)||0;
+    else w[key]=value;
+    renderAll();
+  }
+
+  function addTag(w,tag){
+    const max=w.rare?3:2;
+    if(!tag || w.tags.includes(tag) || w.tags.length>=max) return;
+    w.tags.push(tag);
+    renderAll();
+  }
+
+  function removeInventory(index){
+    const removed=state.inventory.splice(index,1)[0];
+    if(removed?.kind==="ritual"){
+      state.rituals=state.rituals.filter(r=>r.id!==removed.sourceId);
+    }
+    renderAll();
+  }
+
+  function shortRest(){
+    const d=derived();
+    state.character.lifeCurrent = clamp(state.character.lifeCurrent + Math.ceil(d.lifeMax*SHORT_RESTORE_RATIO),0,d.lifeMax);
+    state.character.stabilityCurrent = clamp(state.character.stabilityCurrent + Math.ceil(d.stabilityMax*SHORT_RESTORE_RATIO),0,d.stabilityMax);
+    renderAll();
+    toast("Restauro curto aplicado.");
+  }
+
+  function longRest(){
+    const d=derived();
+    state.character.lifeCurrent=d.lifeMax;
+    state.character.stabilityCurrent=d.stabilityMax;
+    renderAll();
+    toast("Restauro longo: Vida e Estabilidade recuperadas.");
+  }
+
+
+  function toast(msg){
+    const el=document.getElementById("toast");
+    el.textContent=msg;
+    el.classList.add("show");
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer=setTimeout(()=>el.classList.remove("show"),2300);
+  }
+
+  // Header bindings
+  document.getElementById("charName").addEventListener("input",e=>{state.character.name=e.target.value;persist()});
+  document.getElementById("charOrigin").addEventListener("change",e=>{state.character.origin=e.target.value;persist()});
+  document.getElementById("charArchetype").addEventListener("change",e=>{state.character.archetype=e.target.value;normalizeResources();renderAll()});
+
+  document.getElementById("attributeGrid").addEventListener("click",e=>{
+    const button=e.target.closest("button[data-attr]");
+    if(!button) return;
+    const attr=button.dataset.attr;
+    const current=state.character.attrs[attr];
+    handleAttrChange(attr,current + (button.dataset.action==="inc"?1:-1));
+  });
+  document.getElementById("attributeGrid").addEventListener("change",e=>{
+    const input=e.target.closest("input[data-attr]");
+    if(!input) return;
+    handleAttrChange(input.dataset.attr,input.value);
+  });
+
+  document.getElementById("lifeCurrent").addEventListener("change",e=>{
+    state.character.lifeCurrent=Number(e.target.value)||0; normalizeResources(); renderAll();
+  });
+  document.getElementById("stabilityCurrent").addEventListener("change",e=>{
+    state.character.stabilityCurrent=Number(e.target.value)||0; normalizeResources(); renderAll();
+  });
+  document.getElementById("armorType").addEventListener("change",e=>{
+    state.character.armor=Number(e.target.value)||1; renderAll();
+  });
+
+  document.getElementById("addWeaponBtn").addEventListener("click",()=>{ addWeapon(); const w=state.weapons[state.weapons.length-1]; openWeaponEditor(w); });
+  document.getElementById("weaponList").addEventListener("click",e=>{
+    const card=e.target.closest(".weapon-card");
+    if(!card) return;
+    const w=state.weapons.find(x=>x.id===card.dataset.id);
+    if(w) openWeaponEditor(w);
+  });
+
+  document.getElementById("addItemBtn").addEventListener("click",addItem);
+  document.getElementById("closeItemModalBtn").addEventListener("click",closeItemModal);
+  document.getElementById("cancelItemBtn").addEventListener("click",closeItemModal);
+  document.getElementById("saveItemBtn").addEventListener("click",saveItemFromModal);
+  document.getElementById("deleteEditItemBtn").addEventListener("click",()=>{ const m=document.getElementById("itemModal"); const i=Number(m.dataset.editIndex); if(Number.isInteger(i) && state.inventory[i] && confirm("Excluir este item?")) removeInventory(i); closeItemModal(); });
+  document.getElementById("itemModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeItemModal();});
+  document.getElementById("itemNameInput").addEventListener("keydown",e=>{if(e.key==="Enter")saveItemFromModal();});
+  document.getElementById("inventoryGrid").addEventListener("click",e=>{
+    const row=e.target.closest(".inventory-row");
+    if(!row) return;
+    const item=state.inventory[Number(row.dataset.index)];
+    if(!item) return;
+    // Itens e rituais continuam com o editor simples existente; rituais podem ser removidos pela própria lista.
+    if(item.kind==="ritual"){
+      const ritual=state.rituals.find(r=>r.id===item.sourceId);
+      if(ritual) openViewer(ritual);
+      return;
+    }
+    const modal=document.getElementById("itemModal");
+    document.getElementById("itemModalTitle").textContent="Editar Item";
+    document.getElementById("itemNameInput").value=item.name;
+    document.getElementById("itemSlotsInput").value=item.slots;
+    document.getElementById("saveItemBtn").textContent="Salvar Alterações";
+    document.getElementById("deleteEditItemBtn").style.display="inline-flex";
+    modal.dataset.editIndex=String(row.dataset.index); modal.classList.add("open"); requestAnimationFrame(()=>document.getElementById("itemNameInput").focus());
+  });
+
+  document.getElementById("newRitualBtn").addEventListener("click",openBuilder);
+  document.getElementById("closeWeaponModalBtn").addEventListener("click",closeWeaponModal);
+  document.getElementById("weaponModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeWeaponModal();});
+  document.getElementById("closeModalBtn").addEventListener("click",closeModal);
+  document.getElementById("ritualModal").addEventListener("click",e=>{
+    if(e.target===e.currentTarget) closeModal();
+  });
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Escape")return;
+    if(document.getElementById("itemModal").classList.contains("open"))closeItemModal();
+    else if(document.getElementById("weaponModal").classList.contains("open"))closeWeaponModal();
+    else if(document.getElementById("ritualModal").classList.contains("open"))closeModal();
+  });
+
+  document.getElementById("ritualList").addEventListener("click",e=>{
+    const btn=e.target.closest("[data-action='view-ritual']");
+    if(!btn) return;
+    const ritual=state.rituals.find(r=>r.id===btn.dataset.id);
+    if(ritual) openViewer(ritual);
+  });
+
+  document.getElementById("shortRestBtn").addEventListener("click",shortRest);
+  document.getElementById("longRestBtn").addEventListener("click",longRest);
+  document.getElementById("exportBtn").addEventListener("click",exportCharacter);
+  document.getElementById("importBtn").addEventListener("click",()=>document.getElementById("importInput").click());
+  document.getElementById("importInput").addEventListener("change",e=>{ const file=e.target.files?.[0]; if(file) importCharacter(file); e.target.value=""; });
+
+  // Initial state correction
+  normalizeResources();
+  const characterNotes = document.getElementById("characterNotes");
+  if(characterNotes){ characterNotes.addEventListener("input", () => { state.character.notes = characterNotes.value; persist(); }); }
+  renderAll();
+})();
+</script>
+</body>
+</html>
